@@ -2,6 +2,7 @@ package main
 
 import (
 	"bufio"
+	"flag"
 	"fmt"
 	"log"
 	"os"
@@ -9,16 +10,25 @@ import (
 )
 
 func main() {
-	// set variables for opening file based on CLI arg
-	file, err := os.Open(os.Args[1])
+	filePtr := flag.String("file", "sample.gff3", "input file")
+	dataPtr := flag.String("type", "pseudogenes", "type of data to extract")
+	outputPtr := flag.String("output", "pseudogenes.gff3", "output file")
 
-	// if error isn't empty, do this:
+	flag.Parse()
+
+	// open input file
+	file, err := os.Open(*filePtr)
 	if err != nil {
-		// equivalent to Print() followed by os.Exit(1)
-		log.Fatal(err)
+		log.Fatal(err) // equivalent to Print() followed by os.Exit(1)
 	}
 	// close file when done
 	defer file.Close()
+
+	// create output file
+	output, err := os.Create(*outputPtr)
+	if err != nil {
+		log.Fatal(err)
+	}
 
 	var dataArr []string
 	isFasta := false
@@ -47,8 +57,10 @@ func main() {
 		parts := strings.Split(line, "\t")
 
 		// if pseudogene, add it to slice
-		if parts[2] == "pseudogene" {
+		if parts[2] == *dataPtr {
 			dataArr = append(dataArr, line)
+			// print line to output file
+			fmt.Fprintln(output, line)
 		}
 
 	}
