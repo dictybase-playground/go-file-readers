@@ -13,25 +13,6 @@ import (
 	cli "gopkg.in/urfave/cli.v1"
 )
 
-// User data structure
-type User struct {
-	FirstName     string `json:"first_name"`
-	LastName      string `json:"last_name"`
-	Email         string `json:"email"`
-	Organization  string `json:"organization"`
-	GroupName     string `json:"group_name"`
-	FirstAddress  string `json:"first_address"`
-	SecondAddress string `json:"second_address"`
-	City          string `json:"city"`
-	State         string `json:"state"`
-	Zipcode       string `json:"zipcode"`
-	Country       string `json:"country"`
-	Phone         string `json:"phone"`
-	IsActive      bool   `json:"is_active"`
-	// created_at
-	// updated_at
-}
-
 // StoreCSVinDB reads CSV file, converts to User struct, saves in ArangoDB
 func StoreCSVinDB(c *cli.Context) error {
 	// initialize connection to arangodb
