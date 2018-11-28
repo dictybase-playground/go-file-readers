@@ -3,7 +3,7 @@ package main
 import (
 	"os"
 
-	"github.com/dictybase-playground/go-file-reader/commands"
+	"github.com/dictybase-playground/go-file-readers/commands"
 	"gopkg.in/urfave/cli.v1"
 )
 
