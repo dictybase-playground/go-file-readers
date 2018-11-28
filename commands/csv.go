@@ -31,7 +31,7 @@ type User struct {
 }
 
 // CSVtoJSON reads csv file, converts it to JSON and writes it to new file
-func CSVtoJSON(c *cli.Context) {
+func CSVtoJSON(c *cli.Context) error {
 	// open input file
 	file, err := os.Open(c.String("file"))
 	if err != nil {
@@ -88,4 +88,6 @@ func CSVtoJSON(c *cli.Context) {
 	jsonFile.Write(usersJSON)
 
 	fmt.Println("JSON successfully written to", c.String("output"))
+
+	return nil
 }

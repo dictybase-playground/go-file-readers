@@ -11,7 +11,7 @@ import (
 )
 
 // GFF3ReadAndWrite reads GFF3 file and writes new one based on type
-func GFF3ReadAndWrite(c *cli.Context) {
+func GFF3ReadAndWrite(c *cli.Context) error {
 	// open input file
 	file, err := os.Open(c.String("file"))
 	if err != nil {
@@ -67,4 +67,6 @@ func GFF3ReadAndWrite(c *cli.Context) {
 	if err := scanner.Err(); err != nil {
 		log.Fatal(err)
 	}
+
+	return nil
 }
