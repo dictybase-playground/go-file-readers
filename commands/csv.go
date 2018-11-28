@@ -3,11 +3,12 @@ package commands
 import (
 	"encoding/csv"
 	"encoding/json"
-	"flag"
 	"fmt"
 	"io"
 	"log"
 	"os"
+
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 // User data structure
@@ -30,14 +31,9 @@ type User struct {
 }
 
 // CSVtoJSON reads csv file, converts it to JSON and writes it to new file
-func CSVtoJSON() {
-	filePtr := flag.String("file", "users.csv", "input file")
-	outputPtr := flag.String("output", "users.json", "output file")
-
-	flag.Parse()
-
+func CSVtoJSON(c *cli.Context) {
 	// open input file
-	file, err := os.Open(*filePtr)
+	file, err := os.Open(c.String("file"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -83,7 +79,7 @@ func CSVtoJSON() {
 
 	fmt.Println("total number of users =", len(users))
 
-	jsonFile, err := os.Create(*outputPtr)
+	jsonFile, err := os.Create(c.String("output"))
 	if err != nil {
 		fmt.Println(err)
 	}
@@ -91,5 +87,5 @@ func CSVtoJSON() {
 
 	jsonFile.Write(usersJSON)
 
-	fmt.Println("JSON successfully written to", *outputPtr)
+	fmt.Println("JSON successfully written to", c.String("output"))
 }

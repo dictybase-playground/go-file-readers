@@ -2,23 +2,18 @@ package commands
 
 import (
 	"bufio"
-	"flag"
 	"fmt"
 	"log"
 	"os"
 	"strings"
+
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 // GFF3ReadAndWrite reads GFF3 file and writes new one based on type
-func GFF3ReadAndWrite() {
-	filePtr := flag.String("file", "sample.gff3", "input file")
-	dataPtr := flag.String("type", "pseudogenes", "type of data to extract")
-	outputPtr := flag.String("output", "pseudogenes.gff3", "output file")
-
-	flag.Parse()
-
+func GFF3ReadAndWrite(c *cli.Context) {
 	// open input file
-	file, err := os.Open(*filePtr)
+	file, err := os.Open(c.String("file"))
 	if err != nil {
 		log.Fatal(err) // equivalent to Print() followed by os.Exit(1)
 	}
@@ -26,7 +21,7 @@ func GFF3ReadAndWrite() {
 	defer file.Close()
 
 	// create output file
-	output, err := os.Create(*outputPtr)
+	output, err := os.Create(c.String("output"))
 	if err != nil {
 		log.Fatal(err)
 	}
@@ -58,7 +53,7 @@ func GFF3ReadAndWrite() {
 		parts := strings.Split(line, "\t")
 
 		// if pseudogene, add it to slice
-		if parts[2] == *dataPtr {
+		if parts[2] == c.String("type") {
 			dataArr = append(dataArr, line)
 			// print line to output file
 			fmt.Fprintln(output, line)
