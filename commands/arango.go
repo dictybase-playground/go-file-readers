@@ -13,7 +13,25 @@ import (
 	cli "gopkg.in/urfave/cli.v1"
 )
 
-// StoreCSVinDB reads CSV file, converts to User struct, saves in ArangoDB
+type UserData struct {
+	FirstName     string `json:"first_name"`
+	LastName      string `json:"last_name"`
+	Email         string `json:"email"`
+	Organization  string `json:"organization"`
+	GroupName     string `json:"group_name"`
+	FirstAddress  string `json:"first_address"`
+	SecondAddress string `json:"second_address"`
+	City          string `json:"city"`
+	State         string `json:"state"`
+	Zipcode       string `json:"zipcode"`
+	Country       string `json:"country"`
+	Phone         string `json:"phone"`
+	IsActive      bool   `json:"is_active"`
+	// created_at
+	// updated_at
+}
+
+// StoreCSVinDB reads CSV file, converts to UserData struct, saves in ArangoDB
 func StoreCSVinDB(c *cli.Context) error {
 	// initialize connection to arangodb
 	conn, err := http.NewConnection(http.ConnectionConfig{
@@ -50,7 +68,7 @@ func StoreCSVinDB(c *cli.Context) error {
 
 	defer file.Close()
 
-	var users []User
+	var users []UserData
 
 	// read file into variable
 	reader := csv.NewReader(file)
@@ -65,7 +83,7 @@ func StoreCSVinDB(c *cli.Context) error {
 			log.Fatal(err)
 		}
 
-		users = append(users, User{
+		users = append(users, UserData{
 			FirstName:     line[1],
 			LastName:      line[2],
 			Email:         line[0],
