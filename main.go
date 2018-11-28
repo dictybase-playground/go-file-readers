@@ -2,6 +2,7 @@ package main
 
 import (
 	"encoding/csv"
+	"encoding/json"
 	"flag"
 	"fmt"
 	"io"
@@ -11,25 +12,27 @@ import (
 
 // User data structure
 type User struct {
-	firstName     string `json:"first_name"`
-	lastName      string `json:"last_name"`
-	email         string `json:"email"`
-	organization  string `json:"organization"`
-	groupName     string `json:"group_name"`
-	firstAddress  string `json:"first_address"`
-	secondAddress string `json:"second_address"`
-	city          string `json:"city"`
-	state         string `json:"state"`
-	zipcode       string `json:"zipcode"`
-	country       string `json:"country"`
-	phone         string `json:"phone"`
-	isActive      bool   `json:"is_active"`
+	FirstName     string `json:"first_name"`
+	LastName      string `json:"last_name"`
+	Email         string `json:"email"`
+	Organization  string `json:"organization"`
+	GroupName     string `json:"group_name"`
+	FirstAddress  string `json:"first_address"`
+	SecondAddress string `json:"second_address"`
+	City          string `json:"city"`
+	State         string `json:"state"`
+	Zipcode       string `json:"zipcode"`
+	Country       string `json:"country"`
+	Phone         string `json:"phone"`
+	IsActive      bool   `json:"is_active"`
 	// created_at
 	// updated_at
 }
 
+// main reads csv file, converts it to JSON and writes it to new file
 func main() {
 	filePtr := flag.String("file", "users.csv", "input file")
+	outputPtr := flag.String("output", "users.json", "output file")
 
 	flag.Parse()
 
@@ -44,53 +47,49 @@ func main() {
 	var users []User
 
 	// read file into variable
-	r := csv.NewReader(file)
-	_, err = r.Read()
-	if err != nil {
-		log.Fatal(err)
-	}
+	reader := csv.NewReader(file)
 
 	for {
-		r, err := r.Read()
+		line, err := reader.Read()
 		if err == io.EOF {
+			// break the loop at end of file
 			break
 		}
 		if err != nil {
 			log.Fatal(err)
 		}
 
-		data := User{
-			firstName:     r[1],
-			lastName:      r[2],
-			email:         r[0],
-			organization:  r[6],
-			groupName:     r[4], // is this right?
-			firstAddress:  r[7],
-			secondAddress: r[8],
-			city:          r[9],
-			state:         r[10],
-			zipcode:       r[13],
-			country:       r[12],
-			phone:         r[15],
-			isActive:      true,
-		}
-
-		users = append(users, data)
-
-		fmt.Println(data.firstName + " " + data.lastName)
+		users = append(users, User{
+			FirstName:     line[1],
+			LastName:      line[2],
+			Email:         line[0],
+			Organization:  line[6],
+			GroupName:     line[4], // is this right?
+			FirstAddress:  line[7],
+			SecondAddress: line[8],
+			City:          line[9],
+			State:         line[10],
+			Zipcode:       line[13],
+			Country:       line[12],
+			Phone:         line[15],
+			IsActive:      true,
+		})
 	}
-	// Convert to JSON
-	// jsonData, err := json.Marshal(users)
-	// if err != nil {
-	// 	log.Fatal(err)
-	// }
+	// convert to JSON
+	usersJSON, err := json.Marshal(users)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// jsonFile, err := os.Create("./data.json")
-	// if err != nil {
-	// 	fmt.Println(err)
-	// }
-	// defer jsonFile.Close()
+	fmt.Println("total number of users =", len(users))
 
-	// jsonFile.Write(jsonData)
-	// jsonFile.Close()
+	jsonFile, err := os.Create(*outputPtr)
+	if err != nil {
+		fmt.Println(err)
+	}
+	defer jsonFile.Close()
+
+	jsonFile.Write(usersJSON)
+
+	fmt.Println("JSON successfully written to", *outputPtr)
 }
