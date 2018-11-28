@@ -8,7 +8,7 @@ import (
 	"log"
 	"os"
 
-	cli "gopkg.in/urfave/cli.v1"
+	"gopkg.in/urfave/cli.v1"
 )
 
 // User data structure

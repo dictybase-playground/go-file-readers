@@ -7,7 +7,7 @@ import (
 	"os"
 	"strings"
 
-	cli "gopkg.in/urfave/cli.v1"
+	"gopkg.in/urfave/cli.v1"
 )
 
 // GFF3ReadAndWrite reads GFF3 file and writes new one based on type
