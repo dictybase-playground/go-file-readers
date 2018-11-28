@@ -52,6 +52,46 @@ func main() {
 				},
 			},
 		},
+		{
+			Name:   "arango",
+			Usage:  "reads csv file, converts to user data structure and stores in arangodb",
+			Action: commands.StoreCSVinDB,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "file",
+					Usage: "csv file to convert",
+					Value: "users.gff3",
+				},
+				cli.StringFlag{
+					Name:  "user",
+					Usage: "arangodb username",
+				},
+				cli.StringFlag{
+					Name:  "pw",
+					Usage: "arangodb password",
+				},
+				cli.StringFlag{
+					Name:  "host",
+					Usage: "arangodb host",
+					Value: "localhost",
+				},
+				cli.StringFlag{
+					Name:  "port",
+					Usage: "arangodb port",
+					Value: "8529",
+				},
+				cli.StringFlag{
+					Name:  "db",
+					Usage: "arangodb database",
+					Value: "colleagues",
+				},
+				cli.StringFlag{
+					Name:  "collection",
+					Usage: "arangodb collection",
+					Value: "users",
+				},
+			},
+		},
 	}
 	app.Run(os.Args)
 }
