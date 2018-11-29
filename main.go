@@ -26,7 +26,7 @@ func main() {
 				cli.StringFlag{
 					Name:  "type",
 					Usage: "type of data to extract (i.e. pseudogenes)",
-					Value: "pseudogenes",
+					Value: "pseudogene",
 				},
 				cli.StringFlag{
 					Name:  "output",
@@ -43,7 +43,7 @@ func main() {
 				cli.StringFlag{
 					Name:  "file",
 					Usage: "csv file to convert",
-					Value: "users.gff3",
+					Value: "users.csv",
 				},
 				cli.StringFlag{
 					Name:  "output",
@@ -60,7 +60,7 @@ func main() {
 				cli.StringFlag{
 					Name:  "file",
 					Usage: "csv file to convert",
-					Value: "users.gff3",
+					Value: "users.csv",
 				},
 				cli.StringFlag{
 					Name:  "user",
