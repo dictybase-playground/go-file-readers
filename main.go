@@ -4,7 +4,7 @@ import (
 	"os"
 
 	"github.com/dictybase-playground/go-file-readers/commands"
-	"gopkg.in/urfave/cli.v1"
+	cli "gopkg.in/urfave/cli.v1"
 )
 
 func main() {
@@ -49,6 +49,26 @@ func main() {
 					Name:  "output",
 					Usage: "output file",
 					Value: "users.json",
+				},
+			},
+		},
+		{
+			Name:   "txt",
+			Usage:  "reads txt file, converts it to JSON and writes it to new file",
+			Action: commands.TxtToJSON,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "file",
+					Usage: "txt file to convert",
+				},
+				cli.StringFlag{
+					Name:  "chr",
+					Usage: "the chromosome to extract",
+				},
+				cli.StringFlag{
+					Name:  "output",
+					Usage: "output file",
+					Value: "output.json",
 				},
 			},
 		},
