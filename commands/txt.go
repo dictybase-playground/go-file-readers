@@ -13,6 +13,7 @@ import (
 // Chromosome is the main data struct for json
 type Chromosome struct {
 	Type       string          `json:"type"`
+	ID         string          `json:"id"`
 	Attributes *ChromosomeAttr `json:"attributes"`
 }
 
@@ -50,6 +51,7 @@ func TxtToJSON(c *cli.Context) error {
 		parts := strings.Split(line, "\t")
 		data = append(data, Chromosome{
 			Type: "chromosomes",
+			ID:   chrMap[parts[0]],
 			Attributes: &ChromosomeAttr{
 				Chromosome: chrMap[parts[0]],
 				Start:      parts[1],
@@ -62,13 +64,15 @@ func TxtToJSON(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("error converting to json %s", err)
 	}
-	fmt.Printf("total number of lines converted = %d", len(data))
+	fmt.Printf("total number of lines converted = %d\n", len(data))
 	f, err := os.Create(c.String("output"))
 	if err != nil {
 		return fmt.Errorf("error creating output file %s", err)
 	}
 	defer f.Close()
+	f.WriteString("{\"data\": ")
 	f.Write(j)
-	fmt.Println("JSON successfully written to", c.String("output"))
+	f.WriteString("}")
+	fmt.Printf("JSON successfully written to %s\n", c.String("output"))
 	return nil
 }
