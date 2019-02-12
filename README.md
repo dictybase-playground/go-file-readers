@@ -17,6 +17,7 @@ VERSION:
 COMMANDS:
      gff3     reads GFF3 file and extracts data by given type
      csv      reads csv file, converts it to JSON and writes it to new file
+     txt      reads txt file, converts it to JSON and writes it to new file
      arango   reads csv file, converts to user data structure and stores in arangodb
      help, h  Shows a list of commands or help for one command
 
