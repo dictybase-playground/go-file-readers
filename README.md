@@ -19,6 +19,7 @@ COMMANDS:
      csv      reads csv file, converts it to JSON and writes it to new file
      txt      reads txt file, converts it to JSON and writes it to new file
      arango   reads csv file, converts to user data structure and stores in arangodb
+     ddanat   converts data given DDANAT IDs into JSON file with circos coordinates and other data
      help, h  Shows a list of commands or help for one command
 
 GLOBAL OPTIONS:
