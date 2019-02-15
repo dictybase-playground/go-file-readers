@@ -112,6 +112,31 @@ func main() {
 				},
 			},
 		},
+		{
+			Name:   "ddanat",
+			Usage:  "converts data given DDANAT IDs into JSON file with circos coordinates and other data",
+			Action: commands.ConvertXlsxToJSON,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "xlsx",
+					Usage: "xlsx file to convert",
+				},
+				cli.StringFlag{
+					Name:  "output",
+					Usage: "output json file",
+					Value: "output.json",
+				},
+				cli.StringFlag{
+					Name:  "json",
+					Usage: "genes json file to parse",
+					Value: "data/genes.json",
+				},
+				cli.StringFlag{
+					Name:  "txt",
+					Usage: "txt file containing DDANAT IDs",
+				},
+			},
+		},
 	}
 	app.Run(os.Args)
 }
