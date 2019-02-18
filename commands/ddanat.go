@@ -60,38 +60,30 @@ type GeneDataAttr struct {
 // ConvertXlsxToJSON reads an XLSX file and TXT file with DDANAT IDs,
 // then writes the customized output into a JSON file.
 func ConvertXlsxToJSON(c *cli.Context) error {
-	// 1. Open the specified XLSX file
+	// Open the specified XLSX file
 	x, err := xlsx.OpenFile(c.String("xlsx"))
 	if err != nil {
 		return fmt.Errorf("error reading xlsx file %s", err)
 	}
 	var genes []Spatial
-	// 2. Open the specified TXT file and get slice of DDANAT IDs.
+	// Open the specified TXT file and get slice of DDANAT IDs.
 	m, err := readTxtAndGetIDs(c.String("txt"))
 	if err != nil {
 		return fmt.Errorf("error reading txt file %s", err)
 	}
-	// 3. Loop through the Excel sheets.
+	// Loop through the Excel sheets.
 	for _, s := range x.Sheets {
-		// 4. Loop through the rows of the Excel sheet.
+		// Loop through the rows of the Excel sheet.
 		for _, r := range s.Rows {
-			// 5. Loop through the slice of DDANAT IDs.
+			// Loop through the slice of DDANAT IDs.
 			for _, v := range m {
-				// 6. If the DDANAT IDs from the Excel sheet and the slice match up, continue.
+				// If the DDANAT IDs from the Excel sheet and the slice match up, continue.
 				if r.Cells[2].String() == v {
-					// 7. Read the JSON content from specified file.
-					jq := gojsonq.New().File(c.String("json"))
-					// 8. Run query to find the matching gene ID for that DDANAT ID.
-					q := jq.From("data").WhereEqual("id", r.Cells[0].String()).First()
-					// 9. Get the JSON encoding from query response.
-					b, err := json.Marshal(q)
+					g, err := readAndParseJSON(c.String("json"), r.Cells[0].String())
 					if err != nil {
-						return fmt.Errorf("error converting to json %s", err)
+						return fmt.Errorf("error reading and parsing json %s", err)
 					}
-					g := Gene{}
-					// 10. Parse the JSON data and store it in a pointer for our Gene struct.
-					json.Unmarshal(b, &g)
-					// 11. Append the data into the customized Spatial struct, getting the
+					// Append the data into the customized Spatial struct, getting the
 					// desired data from both the JSON and the XLSX.
 					genes = append(genes, Spatial{
 						Type: "genes",
@@ -111,25 +103,45 @@ func ConvertXlsxToJSON(c *cli.Context) error {
 			}
 		}
 	}
-	// 12. Convert the genes slice to JSON.
+	// Convert the genes slice to JSON.
 	ga, err := json.Marshal(genes)
 	if err != nil {
 		return fmt.Errorf("unable to convert genes slice to json %s", err)
 	}
 	fmt.Println("total number of genes =", len(genes))
-	// 13. Create JSON file to store our new data.
+	// Create JSON file to store our new data.
 	jf, err := os.Create(c.String("output"))
 	if err != nil {
 		return fmt.Errorf("unable to create output json file %s", err)
 	}
 	defer jf.Close()
-	// 14. Write the data to our JSON file.
+	// Write the data to our JSON file.
 	jf.WriteString("{\"data\": ")
 	jf.Write(ga)
 	jf.WriteString("}")
 	return nil
 }
 
+// readAndParseJSON reads from a specified JSON file,
+// finds the matching gene ID for a DDANAT ID,
+// and parses this data into our Gene struct.
+func readAndParseJSON(j, id string) (Gene, error) {
+	// Read the JSON content from specified file.
+	jq := gojsonq.New().File(j)
+	// Run query to find the matching gene ID for that DDANAT ID.
+	q := jq.From("data").WhereEqual("id", id).First()
+	// Get the JSON encoding from query response.
+	b, err := json.Marshal(q)
+	if err != nil {
+		return Gene{}, fmt.Errorf("error converting to json %s", err)
+	}
+	g := Gene{}
+	// Parse the JSON data and store it in a pointer for our Gene struct.
+	json.Unmarshal(b, &g)
+	return g, nil
+}
+
+// convertToBool simply converts the Yes/No cells to a boolean
 func convertToBool(s string) bool {
 	if s == "Yes" {
 		return true
@@ -138,7 +150,7 @@ func convertToBool(s string) bool {
 }
 
 // readTxtAndGetIDs reads a whole file into memory
-// and returns a slice of its lines.
+// and returns a slice of its lines (the DDANAT IDs).
 func readTxtAndGetIDs(p string) ([]string, error) {
 	file, err := os.Open(p)
 	if err != nil {
