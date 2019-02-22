@@ -137,6 +137,28 @@ func main() {
 				},
 			},
 		},
+		{
+			Name:   "plasmid",
+			Usage:  "reads csv and tsv files, converts plasmid name to ID and writes it to new json file",
+			Action: commands.OrderCSVtoJSON,
+			Flags: []cli.Flag{
+				cli.StringFlag{
+					Name:  "order-csv",
+					Usage: "csv file containing orders data",
+					Value: "data/stock_orders.csv",
+				},
+				cli.StringFlag{
+					Name:  "plasmid-tsv",
+					Usage: "tsv file containing plasmid data",
+					Value: "data/plasmid_plasmid.tsv",
+				},
+				cli.StringFlag{
+					Name:  "output",
+					Usage: "output file",
+					Value: "orders.json",
+				},
+			},
+		},
 	}
 	app.Run(os.Args)
 }
